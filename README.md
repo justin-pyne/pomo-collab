@@ -18,7 +18,7 @@ A web-based Pomodoro timer designed to help users maintain productivity by using
 2. Navigate to the project directory:
    - cd pomodoro-collab
 
-3. Install required packages (Optional, if you use Flask or any external packages):
+3. Install required packages:
    - pip install -r requirements.txt
 
 4. Run the application:
