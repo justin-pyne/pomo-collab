@@ -15,7 +15,7 @@ function displayTime(seconds) {
 
 function updateTimerDisplay() {
     document.querySelector('.timer-display').textContent = displayTime(timeLeft);
-    document.title = `${displayTime(timeLeft)} - Pomodoro Timer`;
+    document.title = `${displayTime(timeLeft)} - Pomo-collab Timer`;
 }
 
 function handleTimer() {
@@ -33,9 +33,19 @@ function handleTimer() {
         } else {
             timeLeft = workDuration;
         }
-        const alertSound = document.getElementById('alertSound');
+        const alertSound = document.getElementById('alertSound'); // Play the alert sound
         alertSound.play();
+
+        if (Notification.permission === 'granted') { // Show the notification
+            new Notification('Pomodoro Timer Alert!', {
+                body: isWorkSession ? 'Take a break!' : 'Time to work!',
+            });
+        }
+        
+        
         isWorkSession = !isWorkSession;  // Toggle between work and break
+
+
         pauseTimer();
     }
 
@@ -64,3 +74,10 @@ function resetTimer() {
 document.getElementById('start').addEventListener('click', startTimer);
 document.getElementById('pause').addEventListener('click', pauseTimer);
 document.getElementById('reset').addEventListener('click', resetTimer);
+document.addEventListener('DOMContentLoaded', function() {
+    Notification.requestPermission().then(function(result) {
+        if (result === 'granted') {
+            console.log('User granted notification permission');
+        }
+    });
+});
