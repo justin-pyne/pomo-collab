@@ -15,6 +15,7 @@ function displayTime(seconds) {
 
 function updateTimerDisplay() {
     document.querySelector('.timer-display').textContent = displayTime(timeLeft);
+    document.title = `${displayTime(timeLeft)} - Pomodoro Timer`;
 }
 
 function handleTimer() {
@@ -32,8 +33,10 @@ function handleTimer() {
         } else {
             timeLeft = workDuration;
         }
-
+        const alertSound = document.getElementById('alertSound');
+        alertSound.play();
         isWorkSession = !isWorkSession;  // Toggle between work and break
+        pauseTimer();
     }
 
     updateTimerDisplay();
