@@ -8,8 +8,8 @@ A web-based Pomodoro timer designed to help users maintain productivity by using
 - Alerts: Notifications to inform the user when a session ends and a break begins.
 
 ## Technologies Used:
-Frontend: HTML, CSS, and JavaScript.
-Backend: Python (Flask)
+- Frontend: HTML, CSS, and JavaScript.
+- Backend: Python (Flask)
 
 ## How to Run:
 1. Clone the repository:
