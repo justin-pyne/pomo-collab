@@ -1,0 +1,41 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+header {
+    margin-bottom: 50px;
+}
+
+.timer-display {
+    font-size: 3rem;
+    border: 2px solid black;
+    padding: 20px 50px;
+    margin-bottom: 30px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #e0e0e0;
+}
+
+.status {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
