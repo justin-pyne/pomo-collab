@@ -12,16 +12,16 @@ Frontend: HTML, CSS, and JavaScript.
 Backend: Python (Flask)
 
 ## How to Run:
-- Clone the repository:
-git clone pomodoro-collab
+1. Clone the repository:
+   - git clone pomodoro-collab
 
-- Navigate to the project directory:
-cd pomodoro-collab
+2. Navigate to the project directory:
+   - cd pomodoro-collab
 
-- Install required packages (Optional, if you use Flask or any external packages):
-pip install -r requirements.txt
+3. Install required packages (Optional, if you use Flask or any external packages):
+   - pip install -r requirements.txt
 
-- Run the application:
-python app.py
+4. Run the application:
+   - python app.py
 
-- Open a web browser and navigate to http://127.0.0.1:5000/ to view the application.
+5. Open a web browser and navigate to http://127.0.0.1:5000/ to view the application.
