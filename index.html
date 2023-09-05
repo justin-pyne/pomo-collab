@@ -12,23 +12,27 @@
 
 </head>
 <body>
-    <header>
-        <h1>Pomo-collab</h1>
-    </header>
-    <main>
-        <div class="timer-display">
-            25:00
-        </div>
-        <div class="controls">
-            <button id="start">Start</button>
-            <button id="pause">Pause</button>
-            <button id="reset">Reset</button>
-        </div>
-        <div class="status">
-            Status: <span id="status-text">Ready</span>
-        </div>
-    </main>
+    <div class="container mt-5"> <!-- Bootstrap container -->
+        <header class="text-center mb-4"> <!-- Centered header -->
+            <h1>Pomo-collab</h1>
+        </header>
+        <main class="text-center"> <!-- Centered main content -->
+            <div class="timer-display mb-3">
+                25:00
+            </div>
+            <div class="controls mb-3">
+                <!-- Use Bootstrap's button styles -->
+                <button id="start" class="btn btn-primary mr-2">Start</button>
+                <button id="pause" class="btn btn-secondary mr-2">Pause</button>
+                <button id="reset" class="btn btn-danger">Reset</button>
+            </div>
+            <div class="status">
+                Status: <span id="status-text">Ready</span>
+            </div>
+        </main>
+    </div>
     <script src="js/script.js"></script>
     <audio id="alertSound" src="assets/audio/alert.wav" preload="auto"></audio>
 </body>
+
 </html>
