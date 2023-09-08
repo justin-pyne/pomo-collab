@@ -21,6 +21,8 @@ def handle_create_session():
         'time_left': 1500,
         'status': 'paused',
         }
+    emit('session_created', {'session_id': session_id})
+
 
 @socketio.on('join_session')
 def handle_join_session(session_id):
