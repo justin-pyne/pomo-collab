@@ -1,11 +1,13 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import uuid
+import redis
 
 
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
+r = redis.Redis()
 
 sessions = {}  # This will hold our timer sessions.
 
