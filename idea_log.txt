@@ -1,0 +1,7 @@
+A notepad to serve as a place to record future ideas and features I want to implement.
+
+
+- Leave session button/functionality
+- Join session text field
+- View users in room/create name when joining room
+- Music sync (youtube based?)
