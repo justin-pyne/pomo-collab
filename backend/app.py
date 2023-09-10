@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
 import redis
 import json
@@ -22,7 +22,9 @@ def handle_create_session():
     'time_left': 1500,
     'status': 'paused'
     })
+    r.expire(session_id, 1800)  # 30 min expiry
 
+    join_room(session_id)
     emit('session_created', {'session_id': session_id})
 
 
@@ -33,8 +35,9 @@ def handle_join_session(session_id):
     session_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in session_data.items()} if session_data else None
 
     if session_data:
+        join_room(session_id)
         session_data['time_left'] = int(session_data['time_left'])  # Convert to integer
-        emit('session_joined', session_data)
+        emit('session_joined', session_data, room = session_id)
     else:
         emit('error', {'message': 'Session not found!'})
 
@@ -48,12 +51,13 @@ def handle_timer_update(data):
     # Assuming time_left is sent as an integer from the frontend
     if r.exists(session_id):
         r.hset(session_id, 'time_left', time_left)
+        r.expire(session_id, 1800)  # Reset 30 min expiry while timer is running
         
         updated_session_data = r.hgetall(session_id)
         updated_session_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in updated_session_data.items()}
         updated_session_data['time_left'] = int(updated_session_data['time_left'])  # Convert to integer
         
-        emit('timer_updated', updated_session_data, broadcast=True)
+        emit('timer_updated', updated_session_data, room = session_id)
     else:
         emit('error', {'message': 'Session not found!'})
 
@@ -67,6 +71,7 @@ def handle_action_update(data):
         emit('error', {'message': 'Session not found!'})
         return
 
+    r.expire(session_id, 1800)  # Reset 30 min expiry when actions are performed
     if action == 'start':
         r.hset(session_id, 'status', 'running')
     elif action == 'pause':
@@ -82,7 +87,7 @@ def handle_action_update(data):
     updated_session_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in updated_session_data.items()}
     updated_session_data['time_left'] = int(updated_session_data['time_left'])  # Convert to integer
     
-    emit('action_updated', updated_session_data, broadcast=True)
+    emit('action_updated', updated_session_data, room = session_id)
 
 
 if __name__ == '__main__':
