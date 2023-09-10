@@ -44,8 +44,8 @@ function handleTimer() {
                 body: isWorkSession ? 'Take a break!' : 'Time to work!',
             });
         }
-        
-        
+
+
         isWorkSession = !isWorkSession;  // Toggle between work and break
 
 
@@ -53,20 +53,26 @@ function handleTimer() {
     }
 
     updateTimerDisplay();
-    socket.emit('timer_update', { session_id: 'YOUR_SESSION_ID', time_left: timeLeft });  // Emit timer update to the server
+    if (document.getElementById('onlineModeSwitch').checked) {
+        socket.emit('timer_update', { session_id: currentSessionID, time_left: timeLeft });  // Emit timer update to the server
+    }
 }
 
 function startTimer() {
     if (!timerInterval) {
         timerInterval = setInterval(handleTimer, 1000);  // Update every second
-        socket.emit('action_update', { session_id: 'YOUR_SESSION_ID', action: 'start' });  // Emit start action to the server
+        if (document.getElementById('onlineModeSwitch').checked) {
+            socket.emit('action_update', { session_id: currentSessionID, action: 'start' });  // Emit start action to the server
+        }
     }
 }
 
 function pauseTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
-    socket.emit('action_update', { session_id: 'YOUR_SESSION_ID', action: 'pause' });  // Emit pause action to the server
+    if (document.getElementById('onlineModeSwitch').checked) {
+        socket.emit('action_update', { session_id: currentSessionID, action: 'pause' });  // Emit pause action to the server
+    }
 }
 
 function resetTimer() {
@@ -75,8 +81,12 @@ function resetTimer() {
     workSessionCount = 0;
     timeLeft = workDuration;
     updateTimerDisplay();
-    socket.emit('action_update', { session_id: 'YOUR_SESSION_ID', action: 'reset' });  // Emit reset action to the server
+    if (document.getElementById('onlineModeSwitch').checked) {
+        socket.emit('action_update', { session_id: currentSessionID, action: 'reset' });  // Emit reset action to the server
+    }
 }
+
+// Event Listeners-------------------------------------------------------------------------------------------------------------------
 
 // Timer controls
 document.getElementById('start').addEventListener('click', startTimer);
@@ -84,23 +94,27 @@ document.getElementById('pause').addEventListener('click', pauseTimer);
 document.getElementById('reset').addEventListener('click', resetTimer);
 
 // Session creation and joining
-document.getElementById('createSession').addEventListener('click', function() {
+document.getElementById('createSession').addEventListener('click', function () {
     // Emit the 'create_session' event to the server
-    socket.emit('create_session');
+    if (document.getElementById('onlineModeSwitch').checked) {
+        socket.emit('create_session');
+    }
 });
-document.getElementById('joinSession').addEventListener('click', function() {
+document.getElementById('joinSession').addEventListener('click', function () {
     const sessionID = document.getElementById('sessionIDInput').value;
     if (sessionID) {
         // Emit the 'join_session' event with the session ID
-        socket.emit('join_session', sessionID);
+        if (document.getElementById('onlineModeSwitch').checked) {
+            socket.emit('join_session', sessionID);
+        }
     } else {
         alert("Please enter a valid Session ID.");
     }
 });
 
 // Request notification permission
-document.addEventListener('DOMContentLoaded', function() {
-    Notification.requestPermission().then(function(result) {
+document.addEventListener('DOMContentLoaded', function () {
+    Notification.requestPermission().then(function (result) {
         if (result === 'granted') {
             console.log('User granted notification permission');
         }
@@ -111,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// Socket.io event handlers
+// Socket.io event handlers------------------------------------------------------------------------------------------------------------
 socket.on('session_created', (data) => {
     console.log('Session created with ID:', data.session_id);
     // Here you can update the UI or store the session ID locally.
@@ -135,9 +149,9 @@ socket.on('session_joined', (data) => {
     // Update the timer display
     timeLeft = data.time_left;
     updateTimerDisplay();
-    
+
     // Potentially update other UI elements based on the session's current state
-    if(data.status === 'running') {
+    if (data.status === 'running') {
         // If the session was already running, start the timer on this client's side as well
         startTimer();
     }
@@ -145,7 +159,7 @@ socket.on('session_joined', (data) => {
 
 socket.on('action_updated', (data) => {
     timeLeft = data.time_left;
-    
+
     switch (data.status) {
         case 'running':
             startTimer();
@@ -153,11 +167,11 @@ socket.on('action_updated', (data) => {
         case 'paused':
             pauseTimer();
             break;
-        default: 
+        default:
             console.warn("Received unknown status:", data.status);
             break;
     }
-    
+
     // Update the timer display
     updateTimerDisplay();
 });
