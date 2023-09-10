@@ -5,6 +5,8 @@ const workDuration = 25 * 60;  // 25 minutes
 const shortBreak = 5 * 60;  // 5 minutes
 const longBreak = 15 * 60;  // 15 minutes
 let timerInterval;
+const socket = io.connect('http://localhost:5000'); // Adjust the URL accordingly.
+
 
 
 function displayTime(seconds) {
@@ -50,17 +52,20 @@ function handleTimer() {
     }
 
     updateTimerDisplay();
+    socket.emit('timer_update', { session_id: 'YOUR_SESSION_ID', time_left: timeLeft });  // Emit timer update to the server
 }
 
 function startTimer() {
     if (!timerInterval) {
         timerInterval = setInterval(handleTimer, 1000);  // Update every second
+        socket.emit('action_update', { session_id: 'YOUR_SESSION_ID', action: 'start' });  // Emit start action to the server
     }
 }
 
 function pauseTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
+    socket.emit('action_update', { session_id: 'YOUR_SESSION_ID', action: 'pause' });  // Emit pause action to the server
 }
 
 function resetTimer() {
@@ -69,6 +74,7 @@ function resetTimer() {
     workSessionCount = 0;
     timeLeft = workDuration;
     updateTimerDisplay();
+    socket.emit('action_update', { session_id: 'YOUR_SESSION_ID', action: 'reset' });  // Emit reset action to the server
 }
 
 document.getElementById('start').addEventListener('click', startTimer);
@@ -81,3 +87,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+
+
+
+// Socket.io event handlers
+socket.on('session_created', (data) => {
+    console.log('Session created with ID:', data.session_id);
+    // Here you can update the UI or store the session ID locally.
+});
+
+socket.on('timer_updated', (data) => {
+    timeLeft = data.time_left;
+    // Update your frontend timer display
+    updateTimerDisplay();
+});
+
+
+socket.on('session_joined', (data) => {
+    // Notify the user
+    alert("Successfully joined the session!"); // or use a more elegant notification method
+
+    // Update the timer display
+    timeLeft = data.time_left;
+    updateTimerDisplay();
+    
+    // Potentially update other UI elements based on the session's current state
+    if(data.status === 'running') {
+        // If the session was already running, start the timer on this client's side as well
+        startTimer();
+    }
+});
+
+socket.on('action_updated', (data) => {
+    timeLeft = data.time_left;
+    
+    switch (data.status) {
+        case 'running':
+            startTimer();
+            break;
+        case 'paused':
+            pauseTimer();
+            break;
+        default: 
+            console.warn("Received unknown status:", data.status);
+            break;
+    }
+    
+    // Update the timer display
+    updateTimerDisplay();
+});
+
+socket.on('error', (data) => {
+    alert(data.message);
+});
+
+
+
+

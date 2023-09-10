@@ -1,6 +1,12 @@
 A notepad to serve as a place to record future ideas and features I want to implement.
 
+In progress:
+- action sockets: need to implement session id
+- Create session on frontend
 
+
+
+Future ideas:
 - Leave session button/functionality
 - Join session text field
 - View users in room/create name when joining room

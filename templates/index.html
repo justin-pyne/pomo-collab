@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> <!-- Socket.IO -->
 
 </head>
 <body>
@@ -33,7 +34,6 @@
     </div>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <audio id="alertSound" src="{{ url_for('static', filename='assets/audio/alert.wav') }}" preload="auto"></audio>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> <!-- Socket.IO -->
 </body>
 
 </html>
