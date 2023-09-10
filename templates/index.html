@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> <!-- Socket.IO -->
 
 </head>
+
 <body>
+
     <div class="container mt-5"> <!-- Bootstrap container -->
         <header class="text-center mb-4"> <!-- Centered header -->
             <h1>Pomo-collab</h1>
@@ -32,7 +35,36 @@
             </div>
         </main>
     </div>
+
+    <!-- Floating controls for session creation and joining -->
+    <aside class="session-controls">
+
+        <!-- "Create Session" floating button on the left side -->
+        <div class="position-fixed" style="top: 50%; left: 10px; transform: translateY(-50%);">
+            <button id="createSession" class="btn btn-success">Create Session</button>
+        </div>
+
+        <!-- "Join Session" floating input and button on the right side -->
+        <div class="position-fixed d-flex flex-column align-items-end"
+            style="top: 50%; right: 10px; transform: translateY(-50%);">
+            <input type="text" id="sessionIDInput" placeholder="Enter Session ID" class="mb-2">
+            <button id="joinSession" class="btn btn-info">Join Session</button>
+        </div>
+
+        <!-- Online mode toggle -->
+        <div class="position-fixed" style="bottom: 10px; right: 10px;">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="onlineModeSwitch">
+                <label class="custom-control-label" for="onlineModeSwitch">Online Mode</label>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Socket.IO -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <!-- Audio alert -->
     <audio id="alertSound" src="{{ url_for('static', filename='assets/audio/alert.wav') }}" preload="auto"></audio>
 </body>
 
