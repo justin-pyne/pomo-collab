@@ -79,21 +79,21 @@ function resetTimer() {
 }
 
 // Event Listeners-------------------------------------------------------------------------------------------------------------------
+// Auto room generation
+document.addEventListener('DOMContentLoaded', function () {
+    socket.emit('create_room_auto');
+});
+
 
 // Timer controls
 document.getElementById('start').addEventListener('click', startTimer);
 document.getElementById('pause').addEventListener('click', pauseTimer);
 document.getElementById('reset').addEventListener('click', resetTimer);
 
-// Session creation and joining
-document.getElementById('createSession').addEventListener('click', function () {
-    // Emit the 'create_session' event to the server
-    socket.emit('create_session');
-});
-
+// Session joining
 document.getElementById('joinSession').addEventListener('click', function () {
     const sessionID = document.getElementById('sessionIDInput').value;
-    if (sessionID) {    
+    if (sessionID) {
         // Emit the 'join_session' event with the session ID
         socket.emit('join_session', sessionID);
     } else {
@@ -115,12 +115,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // Socket.io event handlers------------------------------------------------------------------------------------------------------------
-socket.on('session_created', (data) => {
-    console.log('Session created with ID:', data.session_id);
-    // Here you can update the UI or store the session ID locally.
+socket.on('room_created_auto', (data) => {
     currentSessionID = data.session_id;
-    // Notify the user
-    alert(`Session created! Share this session ID with others: ${data.session_id}`); // or use a more elegant notification method
+    alert(`Welcome! Your session ID is: ${data.session_id}`); // Or use a more elegant method to inform the user.
 });
 
 socket.on('timer_updated', (data) => {

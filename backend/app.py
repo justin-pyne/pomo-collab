@@ -14,7 +14,7 @@ r = redis.Redis()
 def index():
     return render_template('index.html')
 
-@socketio.on('create_session')
+@socketio.on('create_room_auto')
 def handle_create_session():
     # Logic to create a session and return a session_id to the client.
     session_id = str(uuid.uuid4()) # Generate a random session ID.
@@ -25,7 +25,7 @@ def handle_create_session():
     r.expire(session_id, 1800)  # 30 min expiry
 
     join_room(session_id)
-    emit('session_created', {'session_id': session_id})
+    emit('room_created_auto', {'session_id': session_id})
 
 
 @socketio.on('join_session')
