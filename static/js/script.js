@@ -9,7 +9,7 @@ const socket = io.connect('http://localhost:5000'); // Adjust the URL accordingl
 let currentSessionID = null;
 
 
-
+// JS Timer logic ------------------------------------------------------------------------------------------------------------------
 function displayTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
