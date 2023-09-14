@@ -53,26 +53,20 @@ function handleTimer() {
     }
 
     updateTimerDisplay();
-    if (document.getElementById('onlineModeSwitch').checked) {
-        socket.emit('timer_update', { session_id: currentSessionID, time_left: timeLeft });  // Emit timer update to the server
-    }
+    socket.emit('timer_update', { session_id: currentSessionID, time_left: timeLeft });  // Emit timer update to the server
 }
 
 function startTimer() {
     if (!timerInterval) {
         timerInterval = setInterval(handleTimer, 1000);  // Update every second
-        if (document.getElementById('onlineModeSwitch').checked) {
-            socket.emit('action_update', { session_id: currentSessionID, action: 'start' });  // Emit start action to the server
-        }
+        socket.emit('action_update', { session_id: currentSessionID, action: 'start' });  // Emit start action to the server
     }
 }
 
 function pauseTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
-    if (document.getElementById('onlineModeSwitch').checked) {
-        socket.emit('action_update', { session_id: currentSessionID, action: 'pause' });  // Emit pause action to the server
-    }
+    socket.emit('action_update', { session_id: currentSessionID, action: 'pause' });  // Emit pause action to the server
 }
 
 function resetTimer() {
@@ -81,9 +75,7 @@ function resetTimer() {
     workSessionCount = 0;
     timeLeft = workDuration;
     updateTimerDisplay();
-    if (document.getElementById('onlineModeSwitch').checked) {
-        socket.emit('action_update', { session_id: currentSessionID, action: 'reset' });  // Emit reset action to the server
-    }
+    socket.emit('action_update', { session_id: currentSessionID, action: 'reset' });  // Emit reset action to the server
 }
 
 // Event Listeners-------------------------------------------------------------------------------------------------------------------
@@ -96,17 +88,14 @@ document.getElementById('reset').addEventListener('click', resetTimer);
 // Session creation and joining
 document.getElementById('createSession').addEventListener('click', function () {
     // Emit the 'create_session' event to the server
-    if (document.getElementById('onlineModeSwitch').checked) {
-        socket.emit('create_session');
-    }
+    socket.emit('create_session');
 });
+
 document.getElementById('joinSession').addEventListener('click', function () {
     const sessionID = document.getElementById('sessionIDInput').value;
-    if (sessionID) {
+    if (sessionID) {    
         // Emit the 'join_session' event with the session ID
-        if (document.getElementById('onlineModeSwitch').checked) {
-            socket.emit('join_session', sessionID);
-        }
+        socket.emit('join_session', sessionID);
     } else {
         alert("Please enter a valid Session ID.");
     }
