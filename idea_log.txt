@@ -1,5 +1,9 @@
 A notepad to serve as a place to record future ideas and features I want to implement.
 
+BEFORE LAUNCH:
+change to gunicorn
+
+
 In progress:
 - action sockets: need to implement session id
 - Create session on frontend
