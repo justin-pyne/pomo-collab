@@ -3,10 +3,11 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
 import redis
 import json
+import os
 
 
-
-app = Flask(__name__)
+template_dir = os.path.abspath('../templates')
+app = Flask(__name__, template_folder=template_dir)
 socketio = SocketIO(app, cors_allowed_origins="*")
 r = redis.Redis()
 
