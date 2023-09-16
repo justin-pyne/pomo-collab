@@ -6,7 +6,7 @@ import json
 import os
 
 
-template_dir = os.path.abspath('../templates')
+template_dir = os.path.abspath('./templates')
 app = Flask(__name__, template_folder=template_dir)
 socketio = SocketIO(app, cors_allowed_origins="*")
 r = redis.Redis()
@@ -92,4 +92,5 @@ def handle_action_update(data):
 
 
 if __name__ == '__main__':
+    print("Template directory path:", template_dir)
     socketio.run(app, host='0.0.0.0', debug=True, allow_unsafe_werkzeug=True)
