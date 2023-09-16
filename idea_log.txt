@@ -5,7 +5,12 @@ change to gunicorn
 
 
 In progress:
-- action sockets: need to implement session id
+- Debug timer not working
+- Check redis/socket logic
+
+
+
+Scrapped:
 - Create session on frontend
 - online Toggle
     - make create and join session not available
