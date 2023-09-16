@@ -1,9 +1,9 @@
 FROM python:3.8-slim
 
-WORKDIR /backend
+WORKDIR /project
 
-COPY . /backend
+COPY . /project
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "app.py"]
+CMD ["python", "backend/app.py"]
