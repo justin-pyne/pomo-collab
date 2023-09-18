@@ -5,7 +5,7 @@ const workDuration = 25 * 60;  // 25 minutes
 const shortBreak = 5 * 60;  // 5 minutes
 const longBreak = 15 * 60;  // 15 minutes
 let timerInterval;
-const socket = io.connect('http://localhost:5000'); // Adjust the URL accordingly.
+const socket = io();  // Adjust the URL accordingly.
 let currentSessionID = null;
 
 
