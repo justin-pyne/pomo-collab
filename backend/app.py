@@ -23,7 +23,7 @@ def handle_create_session():
     'time_left': 1500,
     'status': 'paused'
     })
-    r.expire(session_id, 1800)  # 30 min expiry
+    r.expire(session_id, 3600)  # 1hr expiry
 
     join_room(session_id)
     emit('room_created_auto', {'session_id': session_id})
@@ -52,7 +52,7 @@ def handle_timer_update(data):
     # Assuming time_left is sent as an integer from the frontend
     if r.exists(session_id):
         r.hset(session_id, 'time_left', time_left)
-        r.expire(session_id, 1800)  # Reset 30 min expiry while timer is running
+        r.expire(session_id, 3600)  # Reset expiry while timer is running
         
         updated_session_data = r.hgetall(session_id)
         updated_session_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in updated_session_data.items()}
@@ -72,7 +72,7 @@ def handle_action_update(data):
         emit('error', {'message': 'Session not found!'})
         return
 
-    r.expire(session_id, 1800)  # Reset 30 min expiry when actions are performed
+    r.expire(session_id, 3600)  # Reset expiry when actions are performed
     if action == 'start':
         r.hset(session_id, 'status', 'running')
     elif action == 'pause':
