@@ -1,4 +1,4 @@
-# pomodoro-collab
+# pomo-collab
 A web-based Pomodoro timer designed to help users maintain productivity by using the Pomodoro technique. It employs the concept of 25-minute focused work sessions, followed by 5-minute breaks. After four such intervals, a longer break is taken. The application offers the potential for synchronized timer sessions, allowing friends or colleagues to work together in harmony.
 
 ## Features:
