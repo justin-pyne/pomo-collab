@@ -1,10 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import uuid
 import redis
-import json
 import os
-
 
 template_dir = os.path.abspath('./templates')
 static_dir = os.path.abspath('./static')
@@ -31,6 +29,7 @@ def handle_create_session():
 
     join_room(session_id)
     emit('room_created_auto', {'session_id': session_id})
+    r.sadd(f"members_{session_id}", request.sid)  # Add member
 
 
 @socketio.on('join_session')
@@ -42,7 +41,7 @@ def handle_join_session(session_id):
     if session_data:
         # Increase the member_count by 1.
         r.hincrby(session_id, 'member_count', 1)
-        
+
         join_room(session_id)
         session_data['time_left'] = int(session_data['time_left'])  # Convert to integer
         emit('session_joined', session_data, room = session_id)
@@ -50,6 +49,10 @@ def handle_join_session(session_id):
         # Notify all users in the room about the updated member count.
         current_count = int(session_data['member_count'])
         emit('update_member_count', current_count, room=session_id)
+        r.sadd(f"members_{session_id}", request.sid)  # Add member
+
+        # Save the mapping of request.sid to session_id in Redis.
+        r.set(f"sid_{request.sid}", session_id)
     else:
         emit('error', {'message': 'Session not found!'})
 
@@ -59,12 +62,31 @@ def handle_leave_session(session_id):
     if r.exists(session_id):
         # Decrease the member_count by 1.
         current_count = r.hincrby(session_id, 'member_count', -1)
+        r.srem(f"members_{session_id}", request.sid)
         leave_room(session_id)
         
         # Notify all users in the room about the updated member count.
         emit('update_member_count', current_count, room=session_id)
     else:
         emit('error', {'message': 'Session not found!'})
+
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    session_id = r.get(f"sid_{request.sid}")
+    if session_id:
+        session_id = session_id.decode()
+        
+        r.srem(f"members_{session_id}", request.sid)
+        
+        # Decrease the member_count by 1.
+        current_count = r.hincrby(session_id, 'member_count', -1)
+        
+        # Notify all users in the room about the updated member count.
+        emit('update_member_count', current_count, room=session_id)
+        
+        # Delete the mapping from Redis.
+        r.delete(f"sid_{request.sid}")
 
 
 @socketio.on('timer_update')
