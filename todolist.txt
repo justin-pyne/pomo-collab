@@ -5,23 +5,39 @@ change to gunicorn
 
 
 In progress:
-- Debug timer not working
-- Check redis/socket logic
+1. Displaying the Session ID:
+Add a placeholder at the desired location in your index.html where you want to display the session ID.
+When a session is created or a user joins a room, update this placeholder with the session ID or room name using JavaScript.
+
+2. Implementing the Leave Room Functionality:
+Add a "Leave Room" button in your UI.
+When this button is clicked, send a request to the backend to remove the user from the room and notify other users in the room of the departure.
+Replace the "Join Room" button with "Leave Room" when in a room and vice versa.
+
+3. Prompt to Enter a Nickname:
+Before allowing a user to join a room, show a modal or prompt asking for their nickname.
+Use this nickname when notifying other users in the room about new members or when displaying a list of members.
+
+4. Display Users in the Room with Editable Names:
+Display a list of users in the room. For each user, provide an option to edit the name.
+Use socket.io to update all clients when a name is changed.
+
+5. Leader Functionality:
+By default, the person who creates the room could be the leader.
+Provide an option for the leader to transfer leadership to another member.
+The leader should also have the capability to kick users out of the room.
+
+6. Implementing Synchronization:
+The leader functionality you've proposed is a good approach to handle synchronization. If only the leader can control the timer, it reduces the complexity of handling simultaneous timer interactions.
+Having a setting to allow anyone to change the timer is also a good feature. However, do note that this can lead to synchronization challenges, especially if multiple users try to interact with the timer simultaneously.
+
+7. Timer Logic Backend Implementation:
+This is indeed a larger task and it's a good idea to tackle it after you've ensured basic room functionality.
+The basic idea would be to move the timer logic to the server side and then broadcast the timer status to all clients in the room at regular intervals.
 
 
-
-Scrapped:
-- Create session on frontend
-- online Toggle
-    - make create and join session not available
-    - make timer work when offline
-    - check online mode on before emitting
-    - replace YOUR_SESSION_ID with currentSessionID
 
 
 
 Future ideas:
-- Leave session button/functionality
-- Join session text field
-- View users in room/create name when joining room
 - Music sync (youtube based?)
