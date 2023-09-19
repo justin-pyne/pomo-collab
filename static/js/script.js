@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Socket.io event handlers------------------------------------------------------------------------------------------------------------
 socket.on('room_created_auto', (data) => {
     currentSessionID = data.session_id;
-    alert(`Welcome! Your session ID is: ${data.session_id}`); // Or use a more elegant method to inform the user.
+    document.getElementById('session-id-display').textContent = currentSessionID;
 });
 
 socket.on('timer_updated', (data) => {
@@ -130,7 +130,7 @@ socket.on('timer_updated', (data) => {
 socket.on('session_joined', (data) => {
     currentSessionID = data.session_id;
     // Notify the user
-    alert("Successfully joined the session!"); // or use a more elegant notification method
+    document.getElementById('session-id-display').textContent = currentSessionID;
 
     // Update the timer display
     timeLeft = data.time_left;
