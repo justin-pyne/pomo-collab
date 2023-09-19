@@ -12,9 +12,11 @@ app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 socketio = SocketIO(app, cors_allowed_origins="*")
 r = redis.Redis()
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @socketio.on('create_room_auto')
 def handle_create_session():
@@ -22,7 +24,8 @@ def handle_create_session():
     session_id = str(uuid.uuid4()) # Generate a random session ID.
     r.hset(session_id, mapping={
     'time_left': 1500,
-    'status': 'paused'
+    'status': 'paused',
+    'member_count': 1
     })
     r.expire(session_id, 3600)  # 1hr expiry
 
@@ -37,9 +40,29 @@ def handle_join_session(session_id):
     session_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in session_data.items()} if session_data else None
 
     if session_data:
+        # Increase the member_count by 1.
+        r.hincrby(session_id, 'member_count', 1)
+        
         join_room(session_id)
         session_data['time_left'] = int(session_data['time_left'])  # Convert to integer
         emit('session_joined', session_data, room = session_id)
+
+        # Notify all users in the room about the updated member count.
+        current_count = int(session_data['member_count'])
+        emit('update_member_count', current_count, room=session_id)
+    else:
+        emit('error', {'message': 'Session not found!'})
+
+
+@socketio.on('leave_session')
+def handle_leave_session(session_id):
+    if r.exists(session_id):
+        # Decrease the member_count by 1.
+        current_count = r.hincrby(session_id, 'member_count', -1)
+        leave_room(session_id)
+        
+        # Notify all users in the room about the updated member count.
+        emit('update_member_count', current_count, room=session_id)
     else:
         emit('error', {'message': 'Session not found!'})
 
@@ -62,6 +85,7 @@ def handle_timer_update(data):
         emit('timer_updated', updated_session_data, room = session_id)
     else:
         emit('error', {'message': 'Session not found!'})
+
 
 @socketio.on('action_update')
 def handle_action_update(data):
