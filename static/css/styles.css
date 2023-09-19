@@ -22,3 +22,9 @@ button:hover {
     margin-top: 20px;
     font-size: 1.2rem;
 }
+
+.disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+}

@@ -101,6 +101,16 @@ document.getElementById('joinSession').addEventListener('click', function () {
     }
 });
 
+// Session leaving
+document.getElementById('leaveSession').addEventListener('click', function () {
+    if (this.classList.contains('disabled')) return;
+
+    socket.emit('leave_session', currentSessionID);
+    currentSessionID = null;
+    document.getElementById('session-id-display').textContent = 'None';
+});
+
+
 // Request notification permission
 document.addEventListener('DOMContentLoaded', function () {
     Notification.requestPermission().then(function (result) {
@@ -160,6 +170,16 @@ socket.on('action_updated', (data) => {
 
     // Update the timer display
     updateTimerDisplay();
+});
+
+socket.on('update_member_count', function (memberCount) {
+    const leaveButton = document.getElementById('leaveSession');
+
+    if (memberCount > 1) {
+        leaveButton.classList.remove('disabled');
+    } else {
+        leaveButton.classList.add('disabled');
+    }
 });
 
 socket.on('error', (data) => {
