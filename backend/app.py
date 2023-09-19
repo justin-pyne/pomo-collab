@@ -7,7 +7,8 @@ import os
 
 
 template_dir = os.path.abspath('./templates')
-app = Flask(__name__, template_folder=template_dir)
+static_dir = os.path.abspath('./static')
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 socketio = SocketIO(app, cors_allowed_origins="*")
 r = redis.Redis()
 
