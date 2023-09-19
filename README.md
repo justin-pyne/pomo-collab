@@ -13,15 +13,18 @@ A web-based Pomodoro timer designed to help users maintain productivity by using
 
 ## How to Run:
 1. Clone the repository:
-   - git clone pomodoro-collab
+   - git clone pomo-collab
 
 2. Navigate to the project directory:
-   - cd pomodoro-collab
+   - cd pomo-collab
 
 3. Install required packages:
    - pip install -r requirements.txt
+4. Launch the docker containers:
+   - docker-compose build
+   - docker-compose up
 
-4. Run the application:
+5. Run the application:
    - python app.py
 
-5. Open a web browser and navigate to http://127.0.0.1:5000/ to view the application.
+6. Open a web browser and navigate to http://127.0.0.1:5000/ to view the application.
