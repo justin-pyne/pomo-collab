@@ -93,5 +93,4 @@ def handle_action_update(data):
 
 
 if __name__ == '__main__':
-    print("Template directory path:", template_dir)
     socketio.run(app, host='0.0.0.0', debug=True, allow_unsafe_werkzeug=True)
