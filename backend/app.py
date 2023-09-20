@@ -101,7 +101,6 @@ def handle_leave_session(session_id):
         emit('error', {'message': 'Session not found!'})
 
 
-
 @socketio.on('disconnect')
 def handle_disconnect():
     session_id = r.get(f"sid_{request.sid}")
@@ -112,10 +111,17 @@ def handle_disconnect():
         
         # Decrease the member_count by 1.
         current_count = r.hincrby(session_id, 'member_count', -1)
+
+        if current_count == 0:
+            r.delete(session_id)
+            r.delete(f"members_{session_id}")
         
         # Notify all users in the room about the updated member count.
         emit('update_member_count', current_count, room=session_id)
         
+        # Leave the session room.
+        leave_room(session_id)
+
         # Delete the mapping from Redis.
         r.delete(f"sid_{request.sid}")
 
