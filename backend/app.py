@@ -30,10 +30,30 @@ def handle_create_session():
     join_room(session_id)
     emit('room_created_auto', {'session_id': session_id})
     r.sadd(f"members_{session_id}", request.sid)  # Add member
+    # Save the mapping of request.sid to session_id in Redis immediately after creating a session.
+    r.set(f"sid_{request.sid}", session_id)
 
 
 @socketio.on('join_session')
 def handle_join_session(session_id):
+    # Check if the user is already in another session.
+    prev_session_id = r.get(f"sid_{request.sid}")
+    if prev_session_id:
+        prev_session_id = prev_session_id.decode()
+        
+        # Remove the user from the previous session.
+        r.srem(f"members_{prev_session_id}", request.sid)
+        
+        # Decrease the member_count by 1 for the previous session.
+        r.hincrby(prev_session_id, 'member_count', -1)
+        
+        # Notify all users in the previous room about the updated member count.
+        current_count = r.hget(prev_session_id, 'member_count')
+        emit('update_member_count', int(current_count), room=prev_session_id)
+        
+        # User leaves the previous session.
+        leave_room(prev_session_id)
+    
     # Logic to add the user to a session and return the current timer status.
     session_data = r.hgetall(session_id)
     session_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in session_data.items()} if session_data else None
@@ -62,13 +82,24 @@ def handle_leave_session(session_id):
     if r.exists(session_id):
         # Decrease the member_count by 1.
         current_count = r.hincrby(session_id, 'member_count', -1)
-        r.srem(f"members_{session_id}", request.sid)
+        
+        # If the user is the only member, delete all related session data from Redis.
+        if current_count == 0:
+            r.delete(session_id)
+            r.delete(f"members_{session_id}")
+        else:
+            r.srem(f"members_{session_id}", request.sid)
+        
         leave_room(session_id)
         
         # Notify all users in the room about the updated member count.
         emit('update_member_count', current_count, room=session_id)
+        
+        # Remove the mapping of request.sid to session_id from Redis.
+        r.delete(f"sid_{request.sid}")
     else:
         emit('error', {'message': 'Session not found!'})
+
 
 
 @socketio.on('disconnect')
