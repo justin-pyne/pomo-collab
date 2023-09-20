@@ -46,7 +46,20 @@
             <button id="joinSession" class="btn btn-info">Join Session</button>
         </div>
 
+
         <!-- "Leave Session" floating input and button on the right side -->
+        <div class="position-fixed d-flex flex-column align-items-end"
+            style="top: 58%; right: 10px; transform: translateY(-50%);">
+            <button id="leaveSession" class="btn btn-warning disabled">Leave Session</button>
+        </div>
+
+
+        <!-- Session ID on the left side -->
+        <div class="position-fixed d-flex flex-column align-items-end"
+        style="top: 49%; left: 10px; transform: translateY(-50%);">
+            Session ID: <span id="session-id-display">None</span>
+        </div>
+        
     </aside>
 
     <!-- Socket.IO -->

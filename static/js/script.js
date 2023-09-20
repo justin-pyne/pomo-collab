@@ -101,6 +101,16 @@ document.getElementById('joinSession').addEventListener('click', function () {
     }
 });
 
+// Session leaving
+document.getElementById('leaveSession').addEventListener('click', function () {
+    if (this.classList.contains('disabled')) return;
+
+    socket.emit('leave_session', currentSessionID);
+    currentSessionID = null;
+    document.getElementById('session-id-display').textContent = 'None';
+});
+
+
 // Request notification permission
 document.addEventListener('DOMContentLoaded', function () {
     Notification.requestPermission().then(function (result) {
@@ -117,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Socket.io event handlers------------------------------------------------------------------------------------------------------------
 socket.on('room_created_auto', (data) => {
     currentSessionID = data.session_id;
-    alert(`Welcome! Your session ID is: ${data.session_id}`); // Or use a more elegant method to inform the user.
+    document.getElementById('session-id-display').textContent = currentSessionID;
 });
 
 socket.on('timer_updated', (data) => {
@@ -130,7 +140,7 @@ socket.on('timer_updated', (data) => {
 socket.on('session_joined', (data) => {
     currentSessionID = data.session_id;
     // Notify the user
-    alert("Successfully joined the session!"); // or use a more elegant notification method
+    document.getElementById('session-id-display').textContent = currentSessionID;
 
     // Update the timer display
     timeLeft = data.time_left;
@@ -160,6 +170,16 @@ socket.on('action_updated', (data) => {
 
     // Update the timer display
     updateTimerDisplay();
+});
+
+socket.on('update_member_count', function (memberCount) {
+    const leaveButton = document.getElementById('leaveSession');
+
+    if (memberCount > 1) {
+        leaveButton.classList.remove('disabled');
+    } else {
+        leaveButton.classList.add('disabled');
+    }
 });
 
 socket.on('error', (data) => {
